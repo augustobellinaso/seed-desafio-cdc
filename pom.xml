@@ -10,22 +10,9 @@
 	</parent>
 	<groupId>com.augustobellinaso.casadocodigo</groupId>
 	<artifactId>CasaDoCodigo</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0</version>
 	<name>CasaDoCodigo</name>
 	<description>Desafio Casa do Código - DevEficiente</description>
-	<url/>
-	<licenses>
-		<license/>
-	</licenses>
-	<developers>
-		<developer/>
-	</developers>
-	<scm>
-		<connection/>
-		<developerConnection/>
-		<tag/>
-		<url/>
-	</scm>
 	<properties>
 		<java.version>21</java.version>
 	</properties>
