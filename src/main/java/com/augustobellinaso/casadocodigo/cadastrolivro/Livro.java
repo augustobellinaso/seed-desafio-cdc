@@ -10,6 +10,7 @@ import jakarta.validation.constraints.*;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.Objects;
 
 @Entity
 public class Livro {
@@ -126,5 +127,16 @@ public class Livro {
                 ", autor=" + autor +
                 ", categoria=" + categoria +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Livro livro)) return false;
+        return Objects.equals(isbn, livro.isbn);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(isbn);
     }
 }

@@ -10,6 +10,8 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.function.Function;
+
 public class NovaCompraRequest {
 
     @Email
@@ -102,17 +104,22 @@ public class NovaCompraRequest {
         return idEstado != null;
     }
 
+    public NovoPedidoRequest getPedido() {
+        return pedido;
+    }
+
     public Compra toModel(EntityManager manager) {
         @NotNull Pais pais = manager.find(Pais.class, idPais);
 
+        Function<Compra, Pedido> funcaoCriacaoPedido = pedido.toModel(manager);
+
         Compra compra = new Compra(email, nome, sobrenome,
                 documento, endereco, complemento, cidade, pais,
-                telefone, cep);
+                telefone, cep, funcaoCriacaoPedido);
 
         if (temEstado()) {
             compra.setEstado(manager.find(Estado.class, idEstado));
         }
-
         return compra;
     }
 }

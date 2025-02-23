@@ -3,14 +3,21 @@ package com.augustobellinaso.casadocodigo.finalizacompra;
 import com.augustobellinaso.casadocodigo.compartilhado.Documento;
 import com.augustobellinaso.casadocodigo.paisestado.Estado;
 import com.augustobellinaso.casadocodigo.paisestado.Pais;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import org.springframework.util.Assert;
 
+import java.util.function.Function;
+
+@Entity
 public class Compra {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
     @Email
     @NotBlank
@@ -48,6 +55,9 @@ public class Compra {
     @ManyToOne
     private Estado estado;
 
+    @OneToOne(mappedBy = "compra", cascade = CascadeType.PERSIST)
+    private Pedido pedido;
+
     @Deprecated(since = "1.0.0")
     public Compra() {}
 
@@ -55,8 +65,8 @@ public class Compra {
                   @NotBlank String sobrenome, @NotBlank @Documento String documento,
                   @NotBlank String endereco, @NotBlank String complemento,
                   @NotBlank String cidade, @NotNull Pais pais,
-                  @NotBlank String telefone, @NotBlank String cep
-                  ) {
+                  @NotBlank String telefone, @NotBlank String cep,
+                  @NotNull Function<Compra, Pedido> funcaoCriacaoPedido) {
         this.email = email;
         this.nome = nome;
         this.sobrenome = sobrenome;
@@ -67,12 +77,14 @@ public class Compra {
         this.telefone = telefone;
         this.cep = cep;
         this.pais = pais;
+        this.pedido = funcaoCriacaoPedido.apply(this);
     }
 
     @Override
     public String toString() {
         return "Compra{" +
-                "email='" + email + '\'' +
+                "id=" + id +
+                ", email='" + email + '\'' +
                 ", nome='" + nome + '\'' +
                 ", sobrenome='" + sobrenome + '\'' +
                 ", documento='" + documento + '\'' +
