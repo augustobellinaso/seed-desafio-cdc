@@ -1,5 +1,7 @@
 package com.augustobellinaso.casadocodigo.finalizacompra;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.WebDataBinder;
@@ -14,6 +16,9 @@ public class FinalizaCompraController {
     @Autowired
     private EstadoPaisValidator estadoPaisValidator;
 
+    @PersistenceContext
+    private EntityManager manager;
+
     @InitBinder
     public void init(WebDataBinder binder) {
         binder.addValidators(estadoPaisValidator);
@@ -21,6 +26,7 @@ public class FinalizaCompraController {
 
     @PostMapping(value = "/compras")
     public String cria(@RequestBody @Valid NovaCompraRequest request) {
-        return request.toString();
+        Compra novaCompra = request.toModel(manager);
+        return novaCompra.toString();
     }
 }

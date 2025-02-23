@@ -27,13 +27,13 @@ public class EstadoPaisValidator implements Validator {
 
         NovaCompraRequest request = (NovaCompraRequest) target;
 
-        Pais pais = entityManager.find(Pais.class, request.getIdPais());
-        Estado estado = entityManager.find(Estado.class, request.getIdEstado());
+        if (request.temEstado()) {
+            Pais pais = entityManager.find(Pais.class, request.getIdPais());
+            Estado estado = entityManager.find(Estado.class, request.getIdEstado());
 
-        if (!estado.pertenceAPais(pais)) {
-            errors.rejectValue("idEstado", null, "o estado informado não pertence ao país selecionado");
+            if (!estado.pertenceAPais(pais)) {
+                errors.rejectValue("idEstado", null, "o estado informado não pertence ao país selecionado");
+            }
         }
     }
-
-
 }

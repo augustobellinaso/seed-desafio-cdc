@@ -4,6 +4,8 @@ import com.augustobellinaso.casadocodigo.compartilhado.Documento;
 import com.augustobellinaso.casadocodigo.compartilhado.ExistsId;
 import com.augustobellinaso.casadocodigo.paisestado.Estado;
 import com.augustobellinaso.casadocodigo.paisestado.Pais;
+import jakarta.persistence.EntityManager;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -37,7 +39,6 @@ public class NovaCompraRequest {
     @ExistsId(fieldName = "id", domainClass = Pais.class)
     private Long idPais;
 
-    @NotNull
     @ExistsId(fieldName = "id", domainClass = Estado.class)
     private Long idEstado;
 
@@ -47,11 +48,16 @@ public class NovaCompraRequest {
     @NotBlank
     private String cep;
 
+    @NotNull
+    @Valid
+    private NovoPedidoRequest pedido;
+
     public NovaCompraRequest(@NotBlank @Email String email, @NotBlank String nome,
                              @NotBlank String sobrenome, @NotBlank @Documento String documento,
                              @NotBlank String endereco, @NotBlank String complemento,
                              @NotBlank String cidade, @NotNull Long idPais, @NotNull Long idEstado,
-                             @NotBlank String telefone, @NotBlank String cep) {
+                             @NotBlank String telefone, @NotBlank String cep,
+                             @NotNull @Valid NovoPedidoRequest pedido) {
         this.email = email;
         this.nome = nome;
         this.sobrenome = sobrenome;
@@ -63,6 +69,7 @@ public class NovaCompraRequest {
         this.idEstado = idEstado;
         this.telefone = telefone;
         this.cep = cep;
+        this.pedido = pedido;
     }
 
     @Override
@@ -79,6 +86,7 @@ public class NovaCompraRequest {
                 ", idEstado=" + idEstado +
                 ", telefone='" + telefone + '\'' +
                 ", cep='" + cep + '\'' +
+                ", pedido=" + pedido +
                 '}';
     }
 
@@ -88,5 +96,23 @@ public class NovaCompraRequest {
 
     public Long getIdEstado() {
         return idEstado;
+    }
+
+    public boolean temEstado() {
+        return idEstado != null;
+    }
+
+    public Compra toModel(EntityManager manager) {
+        @NotNull Pais pais = manager.find(Pais.class, idPais);
+
+        Compra compra = new Compra(email, nome, sobrenome,
+                documento, endereco, complemento, cidade, pais,
+                telefone, cep);
+
+        if (temEstado()) {
+            compra.setEstado(manager.find(Estado.class, idEstado));
+        }
+
+        return compra;
     }
 }
