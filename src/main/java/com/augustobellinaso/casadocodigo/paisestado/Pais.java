@@ -6,6 +6,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.validation.constraints.NotBlank;
 
+import java.util.Objects;
+
 @Entity
 public class Pais {
 
@@ -33,5 +35,17 @@ public class Pais {
                 "id=" + id +
                 ", nome='" + nome + '\'' +
                 '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Pais pais = (Pais) o;
+        return Objects.equals(id, pais.id) && Objects.equals(nome, pais.nome);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, nome);
     }
 }
