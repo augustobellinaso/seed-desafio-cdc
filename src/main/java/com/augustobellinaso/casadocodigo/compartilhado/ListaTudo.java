@@ -24,6 +24,8 @@ public class ListaTudo {
         List<?> categorias = entityManager.createQuery("SELECT c FROM Categoria c").getResultList();
         resultado.put("categorias", categorias.toString());
 
+        List<?> cupons = entityManager.createQuery("SELECT c FROM Cupom c").getResultList();
+        resultado.put("cupons", cupons);
         return resultado;
     }
 }

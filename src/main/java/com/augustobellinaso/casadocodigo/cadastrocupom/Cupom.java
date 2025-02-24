@@ -1,7 +1,6 @@
 package com.augustobellinaso.casadocodigo.cadastrocupom;
 
 import com.augustobellinaso.casadocodigo.compartilhado.UniqueValue;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -22,7 +21,6 @@ public class Cupom {
     private Long id;
 
     @NotBlank
-    @UniqueValue(fieldName = "codigo", domainClass = Cupom.class)
     private String codigo;
 
     @NotNull
@@ -51,5 +49,17 @@ public class Cupom {
                 ", percentualDesconto=" + percentualDesconto +
                 ", dataValidade=" + dataValidade +
                 '}';
+    }
+
+    public boolean valido() {
+        return !LocalDate.now().isAfter(this.dataValidade);
+    }
+
+    public BigDecimal getPercentualDesconto() {
+        return percentualDesconto;
+    }
+
+    public LocalDate getDataValidade() {
+        return dataValidade;
     }
 }

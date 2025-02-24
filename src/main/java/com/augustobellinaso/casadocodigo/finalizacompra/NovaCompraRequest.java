@@ -1,5 +1,6 @@
 package com.augustobellinaso.casadocodigo.finalizacompra;
 
+import com.augustobellinaso.casadocodigo.cadastrocupom.Cupom;
 import com.augustobellinaso.casadocodigo.compartilhado.Documento;
 import com.augustobellinaso.casadocodigo.compartilhado.ExistsId;
 import com.augustobellinaso.casadocodigo.paisestado.Estado;
@@ -9,7 +10,9 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import org.springframework.util.StringUtils;
 
+import java.util.Optional;
 import java.util.function.Function;
 
 public class NovaCompraRequest {
@@ -54,10 +57,13 @@ public class NovaCompraRequest {
     @Valid
     private NovoPedidoRequest pedido;
 
+    @ExistsId(fieldName = "codigo", domainClass = Cupom.class)
+    private String codigoCupom;
+
     public NovaCompraRequest(@NotBlank @Email String email, @NotBlank String nome,
                              @NotBlank String sobrenome, @NotBlank @Documento String documento,
                              @NotBlank String endereco, @NotBlank String complemento,
-                             @NotBlank String cidade, @NotNull Long idPais, @NotNull Long idEstado,
+                             @NotBlank String cidade, @NotNull Long idPais,
                              @NotBlank String telefone, @NotBlank String cep,
                              @NotNull @Valid NovoPedidoRequest pedido) {
         this.email = email;
@@ -68,10 +74,21 @@ public class NovaCompraRequest {
         this.complemento = complemento;
         this.cidade = cidade;
         this.idPais = idPais;
-        this.idEstado = idEstado;
         this.telefone = telefone;
         this.cep = cep;
         this.pedido = pedido;
+    }
+
+    public void setIdEstado(Long idEstado) {
+        this.idEstado = idEstado;
+    }
+
+    public void setCodigoCupom(String codigoCupom) {
+        this.codigoCupom = codigoCupom;
+    }
+
+    public Optional<String> getCodigoCupom() {
+        return Optional.ofNullable(codigoCupom);
     }
 
     @Override
@@ -88,7 +105,7 @@ public class NovaCompraRequest {
                 ", idEstado=" + idEstado +
                 ", telefone='" + telefone + '\'' +
                 ", cep='" + cep + '\'' +
-                ", pedido=" + pedido +
+                ", codigoCupom='" + codigoCupom + '\'' +
                 '}';
     }
 
@@ -108,7 +125,7 @@ public class NovaCompraRequest {
         return pedido;
     }
 
-    public Compra toModel(EntityManager manager) {
+    public Compra toModel(EntityManager manager, CupomRepository cupomRepository) {
         @NotNull Pais pais = manager.find(Pais.class, idPais);
 
         Function<Compra, Pedido> funcaoCriacaoPedido = pedido.toModel(manager);
@@ -120,6 +137,12 @@ public class NovaCompraRequest {
         if (temEstado()) {
             compra.setEstado(manager.find(Estado.class, idEstado));
         }
+
+        if (StringUtils.hasText(codigoCupom)) {
+            Cupom cupom = cupomRepository.getByCodigo(codigoCupom);
+            compra.aplicaCupom(cupom);
+        }
+
         return compra;
     }
 }

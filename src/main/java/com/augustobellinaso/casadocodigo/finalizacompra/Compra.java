@@ -1,5 +1,6 @@
 package com.augustobellinaso.casadocodigo.finalizacompra;
 
+import com.augustobellinaso.casadocodigo.cadastrocupom.Cupom;
 import com.augustobellinaso.casadocodigo.compartilhado.Documento;
 import com.augustobellinaso.casadocodigo.paisestado.Estado;
 import com.augustobellinaso.casadocodigo.paisestado.Pais;
@@ -58,6 +59,9 @@ public class Compra {
     @OneToOne(mappedBy = "compra", cascade = CascadeType.PERSIST)
     private Pedido pedido;
 
+    @Embedded
+    private CupomAplicado cupomAplicado;
+
     @Deprecated(since = "1.0.0")
     public Compra() {}
 
@@ -95,6 +99,7 @@ public class Compra {
                 ", cep='" + cep + '\'' +
                 ", pais=" + pais +
                 ", estado=" + estado +
+                ", cupomAplicado=" + cupomAplicado +
                 '}';
     }
 
@@ -102,5 +107,11 @@ public class Compra {
         Assert.notNull(pais, "Não é possível associar um estado se o país for nulo");
         Assert.isTrue(estado.pertenceAPais(pais), "O estado informado não pertence ao país associado a compra");
         this.estado = estado;
+    }
+
+    public void aplicaCupom(Cupom cupom) {
+        Assert.isTrue(cupom.valido(), "O cupom que está sendo aplicado não está mais válido");
+        Assert.isNull(cupomAplicado, "Não é possível trocar um cupom de uma compra");
+        this.cupomAplicado = new CupomAplicado(cupom);
     }
 }

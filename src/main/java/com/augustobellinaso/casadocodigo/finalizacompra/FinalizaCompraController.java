@@ -20,6 +20,9 @@ public class FinalizaCompraController {
     @PersistenceContext
     private EntityManager manager;
 
+    @Autowired
+    private CupomRepository cupomRepository;
+
     @InitBinder
     public void init(WebDataBinder binder) {
         binder.addValidators(estadoPaisValidator);
@@ -28,7 +31,7 @@ public class FinalizaCompraController {
     @PostMapping(value = "/compras")
     @Transactional
     public String cria(@RequestBody @Valid NovaCompraRequest request) {
-        Compra novaCompra = request.toModel(manager);
+        Compra novaCompra = request.toModel(manager, cupomRepository);
         manager.persist(novaCompra);
 
         return novaCompra.toString();
