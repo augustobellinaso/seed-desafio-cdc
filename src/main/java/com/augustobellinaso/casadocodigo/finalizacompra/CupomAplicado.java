@@ -41,4 +41,8 @@ public class CupomAplicado {
                 ", validadeMomento=" + validadeMomento +
                 '}';
     }
+
+    public BigDecimal getPercentualDescontoMomento() {
+        return percentualDescontoMomento;
+    }
 }

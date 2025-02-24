@@ -47,4 +47,8 @@ public class Pedido {
                 ", itens=" + itens +
                 '}';
     }
+
+    public Set<ItemPedido> getItens() {
+        return itens;
+    }
 }

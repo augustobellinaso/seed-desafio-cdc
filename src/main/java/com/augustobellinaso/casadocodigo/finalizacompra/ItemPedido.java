@@ -49,4 +49,16 @@ public class ItemPedido {
     public BigDecimal total() {
         return precoMomento.multiply(new BigDecimal(quantidade));
     }
+
+    public Livro getLivro() {
+        return livro;
+    }
+
+    public int getQuantidade() {
+        return quantidade;
+    }
+
+    public BigDecimal getPrecoMomento() {
+        return precoMomento;
+    }
 }

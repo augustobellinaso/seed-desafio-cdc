@@ -103,6 +103,58 @@ public class Compra {
                 '}';
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public String getSobrenome() {
+        return sobrenome;
+    }
+
+    public String getDocumento() {
+        return documento;
+    }
+
+    public String getEndereco() {
+        return endereco;
+    }
+
+    public String getComplemento() {
+        return complemento;
+    }
+
+    public String getCidade() {
+        return cidade;
+    }
+
+    public String getTelefone() {
+        return telefone;
+    }
+
+    public String getCep() {
+        return cep;
+    }
+
+    public Pais getPais() {
+        return pais;
+    }
+
+    public Estado getEstado() {
+        return estado;
+    }
+
+    public Pedido getPedido() {
+        return pedido;
+    }
+
+    public CupomAplicado getCupomAplicado() {
+        return cupomAplicado;
+    }
+
     public void setEstado(@NotNull @Valid Estado estado) {
         Assert.notNull(pais, "Não é possível associar um estado se o país for nulo");
         Assert.isTrue(estado.pertenceAPais(pais), "O estado informado não pertence ao país associado a compra");
@@ -114,4 +166,14 @@ public class Compra {
         Assert.isNull(cupomAplicado, "Não é possível trocar um cupom de uma compra");
         this.cupomAplicado = new CupomAplicado(cupom);
     }
+
+    public boolean temEstado() {
+        return estado != null;
+    }
+
+    public boolean temCupom() {
+        return cupomAplicado != null;
+    }
+
+
 }
