@@ -9,6 +9,7 @@ import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
+import org.springframework.util.Assert;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -37,6 +38,7 @@ public class Cupom {
     public Cupom(@NotBlank String codigo,
                  @NotNull @Positive BigDecimal percentualDesconto,
                  @NotNull @Future LocalDate dataValidade) {
+        Assert.isTrue(dataValidade.compareTo(LocalDate.now()) >= 0, "A validade deve ser uma data futura");
         this.codigo = codigo;
         this.percentualDesconto = percentualDesconto;
         this.dataValidade = dataValidade;
